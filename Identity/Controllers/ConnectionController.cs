@@ -26,12 +26,33 @@ namespace Everest.Identity.Controllers
         [HttpGet("{connectionId}")]
         public Connection Find(long connectionId) => connectionRepository.Find(connectionId);
 
+        /// <summary>
+        /// Pour obtenir toutes les connexions d'un compte.
+        /// </summary>
+        /// <param name="account">Le compte dont on souhaite obtenir les connexions.</param>
+        /// <returns>Une liste contenant les connexions du compte.</returns>
         [HttpGet]
         public IList<Connection> List(Account account)
         {
             return connectionRepository.List(c => c.Account.Equals(account));
         }
 
+
+        /// <summary>
+        /// Pour créer une connexion. Autrement dit, pour d'authentifier.
+        /// Obtenir une authentification n'est pas suffisante pour accéder 
+        /// aux ressources protégées de l'application. Il faut encore 
+        /// obtenir une authorization pour l'application que le compte utilise
+        /// pour accéder à l'application.
+        /// </summary>
+        /// <param name="model">Contient les informations sur la connection à créer.</param>
+        /// <exception cref="EntityNotFoundException">
+        ///     Si l'email renseigné pour la connexion n'est utilisé par aucun compte.
+        /// </exception>
+        /// <exception cref="InvalidValueException">
+        ///     Si le mot de passe renseigné n'est pas celui du compte
+        /// </exception>
+        /// <returns>La connexion nouvellement crée.</returns>
         [HttpPost]
         public Connection Create([FromBody] LoginModel model)
         {
@@ -65,8 +86,19 @@ namespace Everest.Identity.Controllers
             return connection;
         }
 
-        
 
+        /// <summary>
+        /// Pour fermer une connexion. Autrement dit, déconnecter un compte.
+        /// Fermer une connexion entrainement de facto l'invalidation de toutes
+        /// les authorisations liées à la connexion.
+        /// </summary>
+        /// <param name="connection">La connexion à fermer.</param>
+        /// <exception cref="InvalidOperationException">
+        ///     Si on essaye de fermer une connexion déjà fermée.
+        /// </exception>
+        /// <returns>
+        ///     Un <see>StatusCodeResult</see> de code 204 si la connexion est fermée.
+        /// </returns>
         [HttpPut("{connectionId}/close")]
         public StatusCodeResult Close(Connection connection)
         {

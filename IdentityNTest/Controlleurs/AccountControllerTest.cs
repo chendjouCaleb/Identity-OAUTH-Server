@@ -5,19 +5,19 @@ using Identity.Core.Binding;
 using Everest.Identity.Core.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace Everest.IdentityTest.Controlleurs
 {
     public class AccountControllerTest
     {
         private AccountController controller;
-        private IRepository<Account, long> accountRepository;
+        private IRepository<Account, string> accountRepository;
         private IPasswordHasher<Account> passwordHasher;
         private AddAccountModel model;
 
@@ -29,7 +29,7 @@ namespace Everest.IdentityTest.Controlleurs
 
 
             controller = serviceProvider.GetRequiredService<AccountController>();
-            accountRepository = serviceProvider.GetRequiredService<IRepository<Account, long>>();
+            accountRepository = serviceProvider.GetRequiredService<IRepository<Account, string>>();
             passwordHasher = serviceProvider.GetRequiredService<IPasswordHasher<Account>>();
 
             model = new AddAccountModel
@@ -177,7 +177,7 @@ namespace Everest.IdentityTest.Controlleurs
                 Surname = "new surname",
                 BirthDate = DateTime.Now.AddYears(-22),
                 Gender = "M",
-                NationalIDNumber = "398562475"
+                NationalId = "398562475"
             };
 
             Account account = controller.Create(model);
@@ -189,7 +189,7 @@ namespace Everest.IdentityTest.Controlleurs
             Assert.AreEqual(info.Name, account.Name);
             Assert.AreEqual(info.Surname, account.Surname);
             Assert.AreEqual(info.BirthDate, account.BirthDate);
-            Assert.AreEqual(info.NationalIDNumber, account.NationalIDNumber);
+            Assert.AreEqual(info.NationalId, account.NationalIDNumber);
             Assert.AreEqual(info.Gender, account.Gender);
         }
 

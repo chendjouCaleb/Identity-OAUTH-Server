@@ -9,13 +9,17 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Everest.Identity.Filters;
 
 namespace Everest.Identity.Controllers
 {
+    /// <summary>
+    /// Controleur pour gérer les comptes utilisateurs dans les applications.
+    /// <see cref="Account"/>
+    /// </summary>
     [Route("api/accounts")]
     public class AccountController:Controller
     {
-        public static string ACCOUNT_IMAGE_FOLDER = "E:/Lab/static/Identity/Account_Image";
         public IRepository<Account, string> accountRepository { get; set; }
         private IPasswordHasher<Account> passwordHasher;
 
@@ -28,12 +32,13 @@ namespace Everest.Identity.Controllers
         /// <summary>
         /// Recherche un compte par un ID
         /// </summary>
-        /// <param name="id">L'ID du compte à chercher</param>
+        /// <param name="accountId">L'ID du compte à chercher</param>
         /// <returns>Un Compte correspondant à l'ID spécifié</returns>
         [HttpGet("{accountId}")]
         public Account Find(string accountId) => accountRepository.Find(accountId);
 
 
+        [HttpGet]
         public ActionResult<Account> List([FromQuery]string username)
         {
             if(username != null)
@@ -46,7 +51,14 @@ namespace Everest.Identity.Controllers
         }
         
 
-
+        /// <summary>
+        /// Permet de créer un compte utilisateur.
+        ///
+        /// </summary>
+        /// <param name="model">Contient les informations sur l'utilisateur et dont sur le futur compte.</param>
+        /// <remarks>L'email renseigné pour le compte ne doit pas être utilisé par un autre compte.</remarks>
+        /// <returns>Le compte nouvellement crée</returns>
+        ///
         [HttpPost]
         public Account Create([FromBody] AddAccountModel model)
         {
@@ -84,6 +96,19 @@ namespace Everest.Identity.Controllers
             return account;
         }
 
+
+        /// <summary>
+        /// Permet de modifier l'email de connexion d'un compte.
+        /// </summary>
+        /// <param name="account">Le compte dont on souhaite modifier l'email.</param>
+        /// <param name="email">Le nouvel email du compte.</param>
+        /// <returns>Un <see>StatusCodeResult</see> de code 201 indiquant que l'email a été modifié.</returns>
+        /// <response code="201">Si l'email est mis à jour.</response>
+        /// <exception cref="InvalidValueException">Si l'email renseigné est déjà utilisé par un autre compte.</exception>
+
+        [Authorize]
+        [RequireAccountOwner]
+        [HttpPut("{accountId}/email")]
         public StatusCodeResult UpdateEmail(Account account, [FromQuery] string email)
         {
             if (accountRepository.Exists(a => a.Email == email))
@@ -94,9 +119,23 @@ namespace Everest.Identity.Controllers
             account.Email = email;
             accountRepository.Update(account);
 
-            return StatusCode(202);
+            return StatusCode(201);
         }
 
+        /// <summary>
+        /// Permet de modifier le numéro de téléphone d'un compte.
+        /// </summary>
+        /// <param name="account">Le compte dont on souhaite modifier le numéro de téléphone.</param>
+        /// <param name="phoneNumber">Le nouveau numéro de téléphone du compte.</param>
+        /// <returns>Un <see>StatusCodeResult</see> de code 201 indiquant que le numéro de 
+        /// téléphone a été modifié.</returns>
+        /// <response code="400"></response>
+        /// <exception cref="InvalidValueException">Si le numéro de téléphone renseigné 
+        /// est déjà utilisé par un autre compte.</exception>
+
+        [Authorize]
+        [RequireAccountOwner]
+        [HttpPut("{accountId}/phone")]
         public StatusCodeResult UpdatePhoneNumber(Account account, [FromQuery] string phoneNumber)
         {
             if (accountRepository.Exists(a => a.PhoneNumber == phoneNumber))
@@ -107,9 +146,23 @@ namespace Everest.Identity.Controllers
             account.PhoneNumber = phoneNumber;
             accountRepository.Update(account);
 
-            return StatusCode(202);
+            return StatusCode(201);
         }
 
+        /// <summary>
+        /// Permet de modifier le nom d'utilisateur d'un compte.
+        /// </summary>
+        /// <param name="account">Le compte dont on souhaite modifier le nom d'utilisateur.</param>
+        /// <param name="username">Le nouveau nom d'utilisateur du compte.</param>
+        /// <returns>Un <see>StatusCodeResult</see> de code 201 indiquant que le nom d'utilisateur
+        /// a été modifié.</returns>
+        /// <response code="400"></response>
+        /// <exception cref="InvalidValueException">Si le nom d'utilisateur renseigné 
+        /// est déjà utilisé par un autre compte.</exception>
+
+        [Authorize]
+        [RequireAccountOwner]
+        [HttpPut("{accountId}/username")]
         public StatusCodeResult UpdateUsername(Account account, [FromQuery] string username)
         {
             if(accountRepository.Exists(a => a.Username == username))
@@ -123,14 +176,21 @@ namespace Everest.Identity.Controllers
             return StatusCode(202);
         }
 
-
+        /// <summary>
+        /// Permet de modifier les informations d'état civil d'un compte.
+        /// </summary>
+        /// <param name="account">Le compte à modifier.</param>
+        /// <param name="info">Les nouvelles informations du compte.</param>
+        /// <returns>Le compte avec ses nouvelles informations.</returns>
+        [Authorize]
+        [RequireAccountOwner]
         [HttpPut("{accountId}/info")]
         public Account UpdateInfo(Account account, [FromBody] AccountInfo info)
         {
             account.Name = info.Name;
             account.Surname = info.Surname;
             account.BirthDate = info.BirthDate;
-            account.NationalIDNumber = info.NationalIDNumber;
+            account.NationalIDNumber = info.NationalId;
             account.Gender = info.Gender;
 
             accountRepository.Update(account);
@@ -138,6 +198,15 @@ namespace Everest.Identity.Controllers
             return account;
         }
 
+
+        /// <summary>
+        /// Permet de modifier l'adresse d'un compte.
+        /// </summary>
+        /// <param name="account">Le compte à modifier.</param>
+        /// <param name="address">Les informations sur na nouvelle adresse du compte.</param>
+        /// <returns>Le compte avec ses nouvelles informations d'adresse.</returns>
+        [Authorize]
+        [RequireAccountOwner]
         [HttpPut("{accountId}/address")]
         public Account UpdateAddress(Account account, [FromBody] Address address)
         {
@@ -152,7 +221,16 @@ namespace Everest.Identity.Controllers
             return account;
         }
 
-
+        /// <summary>
+        /// Permet de modifier le mot de passe d'un compte.
+        /// </summary>
+        /// <param name="account">Le compte à modifier.</param>
+        /// <param name="model">Les informations sur na nouvelle adresse du compte.</param>
+        /// <returns>Un <see>StatusCodeResult</see> de code 201 indiquant que le mot de passe 
+        /// a été modifié.</returns>
+        [Authorize]
+        [RequireAccountOwner]
+        [HttpPut("{accountId}/password")]
         public StatusCodeResult ChangePassword(Account account, UpdatePasswordModel model)
         {
             if(PasswordVerificationResult.Success !=
@@ -169,8 +247,22 @@ namespace Everest.Identity.Controllers
             return StatusCode(202);
         }
 
-
-
+        /// <summary>
+        /// Pour réinitialiser le mot de passe d'un compte.
+        /// Celà peut arriver si le propriétaire du compte perd son mot de passe.
+        /// </summary>
+        /// <param name="account">Le compte à modifier.</param>
+        /// <param name="model">Contient le code de réinitialisation et le nouveau mot de passe.</param>
+        /// <exception cref="InvalidValueException">Si le code de réinitialisation renseigné
+        /// n'est pas celui assigné au compte.</exception>
+        /// 
+        /// <exception cref="InvalidOperationException"> Si le code de réinitialisation est expiré soit 
+        /// 10 minutes après sa création.</exception>
+        /// 
+        /// <returns>Un <see>StatusCodeResult</see> de code 201 indiquant que le mot de passe 
+        /// a été modifié.</returns>
+        /// 
+        [HttpPut("{accountId}/password/reset")]
         public StatusCodeResult ResetPassword(Account account, ResetPasswordModel model)
         {
             if(model.Code != account.ResetPasswordCode)
@@ -193,19 +285,49 @@ namespace Everest.Identity.Controllers
             return StatusCode(202);
         }
 
-
-        public bool CheckPassword([FromQuery]string accountId, [FromForm] string password)
+        /// <summary>
+        ///     Permet de vérifier que le mot de passe fourni est celui qui compte fourni.
+        /// </summary>
+        /// <param name="account">Le compte à vérifier.</param>
+        /// <param name="password">Le mot de passe à vérifier.</param>
+        /// <returns>
+        ///     <code>true</code> Si le mot de passe est bien celui du compte.
+        /// </returns>
+        /// 
+        
+        [HttpPut("{accountId}/password/check")]
+        public bool CheckPassword(Account account, [FromForm] string password)
         {
-            Account account = accountRepository.Find(accountId);
             return PasswordVerificationResult.Success ==
                 passwordHasher.VerifyHashedPassword(account, account.Password, password);
         }
 
+        /// <summary>
+        /// Permet de télécharger l'image d'un compte.
+        /// </summary>
+        /// <param name="account">Le compte dont on souhaite obtenir l'image.</param>
+        /// <returns>Le fichier qui est l'image du compte.</returns>
+        [HttpGet("{accountId}/image")]
+        public async Task<IActionResult> DownloadImage(Account account)
+        {
+            return null;
+        }
 
+
+        /// <summary>
+        /// Permet de changer l'image d'un compte.
+        /// </summary>
+        /// <param name="account">Le compte à modifier.</param>
+        /// <param name="image">Fichier image venant d'un formulaire et qui est la nouvelle image.</param>
+        ///
+        /// <returns>
+        ///     Un <see>StatusCodeResult</see> de code 201 indiquant que l'image a été modifié.
+        /// </returns>
+        [HttpPut("{accountId}/image")]
         public async Task<StatusCodeResult> ChangeImage(Account account, IFormFile image)
         {
             string fileName = $"{account.Id.ToString()}.{image.Name.Split('.').Last()}";
-            string path = Path.Combine(ACCOUNT_IMAGE_FOLDER, fileName);
+            string path = Path.Combine(Constant.ACCOUNT_IMAGE_FOLDER, fileName);
 
             using (var stream = new FileStream(path, FileMode.Create))
             {

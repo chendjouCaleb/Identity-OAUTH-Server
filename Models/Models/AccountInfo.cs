@@ -20,6 +20,6 @@ namespace Everest.Identity.Models
         public string Gender { get; set; }
 
  
-        public string NationalIDNumber { get; set; }
+        public string NationalId { get; set; }
     }
 }

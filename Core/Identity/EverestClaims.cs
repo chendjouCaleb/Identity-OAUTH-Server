@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Everest.Core.Identity
+﻿namespace Everest.Core.Identity
 {
     public class EverestClaims
     {
-        public const string AccountData = "http://schemas.everest.com/ws/2008/06/identity/claims/accountData";
-        public const string NationalIDNumber = "http://schemas.everest.com/ws/2008/06/identity/claims/nationalIDNumber";
+        public const string AccountData     = "http://schemas.everest.com/ws/2008/06/identity/claims/accountData";
+        public const string NationalId      = "http://schemas.everest.com/ws/2008/06/identity/claims/nationalIDNumber";
         public const string RegistrationDate = "http://schemas.everest.com/ws/2008/06/identity/claims/registrationDate";
         public const string Username        = "http://schemas.everest.com/ws/2008/06/identity/claims/username";
         public const string AccessToken     = "http://schemas.everest.com/ws/2008/06/identity/claims/accessToken";

@@ -13,6 +13,7 @@ using System.Text;
 
 namespace Everest.Identity.Controllers
 {
+    [Route("authorizations")]
     public class AuthorizationController:Controller
     {
         private IRepository<Authorization, long> AuthorizationRepository;
@@ -30,7 +31,27 @@ namespace Everest.Identity.Controllers
             Configuration = configuration;
         }
 
-        public Authorization Authorize(AuthorizeModel model)
+        /// <summary>
+        /// Pour obtenir une authorisation OAUTH2.
+        /// Pour le moment seule les applications de confiance auront pourront obtenir des authorisations.
+        /// Une authorisation entre une application entre une application cliente et un compte utilisateurs.
+        /// 
+        /// Une authorization est principalement une jeton JWT contenant des informations sur l'authorisation.
+        /// Un jeton de rafraichissement est aussi fournit pour obtenir un nouveau jeton d'accès lorsque l'actuel
+        /// est expiré.
+        /// 
+        /// </summary>
+        /// <param name="model">Contient les informations sur l'authorisation.</param>
+        /// <exception cref="InvalidValueException">
+        ///     Si le code secret fournit n'est pas celui du client renseigné.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        ///     Si la connexion renseignée est déjà fermée. 
+        ///     Ou si le client a déjà obtenu une authorisation de la connexion.
+        /// </exception>
+        /// <returns>L'authorisation nouvellement crée.</returns>
+        [HttpPost]
+        public Authorization Authorize([FromBody] AuthorizeModel model)
         {
             Client client = ClientRepository.Find(model.ClientId);
             if(model.SecretCode != client.SecretCode)
@@ -47,7 +68,7 @@ namespace Everest.Identity.Controllers
 
             if(AuthorizationRepository.Exists(a => a.Connection.Equals(connection) && a.Client.Equals(client)))
             {
-                throw new InvalidOperationException("Cette application a déjà reçue une authorization pour cette connexion");
+                throw new InvalidOperationException("Cette application a déjà reçue une authorisation pour cette connexion");
             }
 
             Authorization authorization = new Authorization
