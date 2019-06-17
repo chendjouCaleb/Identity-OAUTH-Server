@@ -1,4 +1,5 @@
 ﻿using Everest.Identity.Core.Models;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace Everest.Identity.Models
@@ -15,6 +16,7 @@ namespace Everest.Identity.Models
 
         public string ImageURL { get; set; }
 
+        [JsonIgnore]
         public virtual List<Authorization> Authorizations { get; set; }
     }
 }

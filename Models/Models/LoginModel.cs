@@ -16,7 +16,6 @@ namespace Everest.Identity.Models
         [Required]
         public string OS { get; set; }
 
-        [Required]
         public string RemoteAddress { get; set; }
 
         public bool Persisted { get; set; }

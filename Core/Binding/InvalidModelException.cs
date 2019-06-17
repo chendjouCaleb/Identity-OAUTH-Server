@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Identity.Core.Binding
+namespace Everest.Identity.Core.Binding
 {
     public class InvalidModelException:ApplicationException
     {

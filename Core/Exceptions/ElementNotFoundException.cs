@@ -1,4 +1,4 @@
-﻿using Identity.Core.ExceptionTransformers;
+﻿using Everest.Identity.Core.ExceptionTransformers;
 using System;
 
 namespace Everest.Identity.Core

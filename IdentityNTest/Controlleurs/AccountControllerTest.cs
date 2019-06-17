@@ -1,7 +1,6 @@
 ﻿using Everest.Identity.Controllers;
 using Everest.Identity.Core;
 using Everest.Identity.Models;
-using Identity.Core.Binding;
 using Everest.Identity.Core.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
@@ -11,6 +10,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Everest.Identity.Core.Binding;
 
 namespace Everest.IdentityTest.Controlleurs
 {
@@ -189,7 +189,7 @@ namespace Everest.IdentityTest.Controlleurs
             Assert.AreEqual(info.Name, account.Name);
             Assert.AreEqual(info.Surname, account.Surname);
             Assert.AreEqual(info.BirthDate, account.BirthDate);
-            Assert.AreEqual(info.NationalId, account.NationalIDNumber);
+            Assert.AreEqual(info.NationalId, account.NationalId);
             Assert.AreEqual(info.Gender, account.Gender);
         }
 

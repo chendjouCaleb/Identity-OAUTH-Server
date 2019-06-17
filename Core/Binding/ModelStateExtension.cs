@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Identity.Core.Binding
+namespace Everest.Identity.Core.Binding
 {
     public static class ModelStateExtension
     {

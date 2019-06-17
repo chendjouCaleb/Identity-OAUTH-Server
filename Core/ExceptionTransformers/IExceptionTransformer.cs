@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 
-namespace Identity.Core.ExceptionTransformers
+namespace Everest.Identity.Core.ExceptionTransformers
 {
     public interface IExceptionTransformer
     {

@@ -13,7 +13,7 @@ using System.Text;
 
 namespace Everest.Identity.Controllers
 {
-    [Route("authorizations")]
+    [Route("api/authorizations")]
     public class AuthorizationController:Controller
     {
         private IRepository<Authorization, long> AuthorizationRepository;
@@ -30,6 +30,9 @@ namespace Everest.Identity.Controllers
             ClientRepository = clientRepository;
             Configuration = configuration;
         }
+
+        [HttpGet("{authorizationId}")]
+        public Authorization Find(long authorizationId) => AuthorizationRepository.Find(authorizationId);
 
         /// <summary>
         /// Pour obtenir une authorisation OAUTH2.
@@ -51,7 +54,7 @@ namespace Everest.Identity.Controllers
         /// </exception>
         /// <returns>L'authorisation nouvellement crée.</returns>
         [HttpPost]
-        public Authorization Authorize([FromBody] AuthorizeModel model)
+        public Authorization Create([FromBody] AuthorizeModel model)
         {
             Client client = ClientRepository.Find(model.ClientId);
             if(model.SecretCode != client.SecretCode)

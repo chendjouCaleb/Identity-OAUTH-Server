@@ -77,7 +77,7 @@ namespace Everest.IdentityTest.Controlleurs
         [Test]
         public void Authorize()
         {
-            Authorization authorization = controller.Authorize(model);
+            Authorization authorization = controller.Create(model);
 
             Assert.True(authorizationRepository.Exists(authorization));
 
@@ -96,7 +96,7 @@ namespace Everest.IdentityTest.Controlleurs
         {
             client.SecretCode = "wrong secret code";
 
-            Assert.Throws<InvalidValueException>(() => controller.Authorize(model));
+            Assert.Throws<InvalidValueException>(() => controller.Create(model));
         }
 
         [Test]
@@ -104,7 +104,7 @@ namespace Everest.IdentityTest.Controlleurs
         {
             connection.EndDate = DateTime.Now;
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => controller.Authorize(model));
+            Exception ex = Assert.Throws<InvalidOperationException>(() => controller.Create(model));
 
             Assert.AreEqual("La connexion de l'utilisateur est déjà fermée", ex.Message);
         }
@@ -112,11 +112,11 @@ namespace Everest.IdentityTest.Controlleurs
         [Test]
         public void Try_SameAuthorizationTwoTime()
         {
-            controller.Authorize(model);
+            controller.Create(model);
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => controller.Authorize(model));
+            Exception ex = Assert.Throws<InvalidOperationException>(() => controller.Create(model));
 
-            Assert.AreEqual("Cette application a déjà reçue une authorization pour cette connexion", ex.Message);
+            Assert.AreEqual("Cette application a déjà reçue une authorisation pour cette connexion", ex.Message);
         }
 
 

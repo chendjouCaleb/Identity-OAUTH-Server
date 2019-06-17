@@ -1,8 +1,8 @@
-﻿using Identity.Core.ExceptionTransformers;
+﻿using Everest.Identity.Core.ExceptionTransformers;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Collections.Generic;
 
-namespace Identity.Core.Binding
+namespace Everest.Identity.Core.Binding
 {
     public class BindingErrorModel:ErrorResponseModel
     {

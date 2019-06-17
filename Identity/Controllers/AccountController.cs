@@ -1,6 +1,5 @@
 ﻿using Everest.Identity.Core;
 using Everest.Identity.Models;
-using Identity.Core.Binding;
 using Everest.Identity.Core.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -10,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Everest.Identity.Filters;
+using Everest.Identity.Core.Binding;
 
 namespace Everest.Identity.Controllers
 {
@@ -32,10 +32,11 @@ namespace Everest.Identity.Controllers
         /// <summary>
         /// Recherche un compte par un ID
         /// </summary>
-        /// <param name="accountId">L'ID du compte à chercher</param>
+        /// <param name="account">Le compte à chercher</param>
         /// <returns>Un Compte correspondant à l'ID spécifié</returns>
         [HttpGet("{accountId}")]
-        public Account Find(string accountId) => accountRepository.Find(accountId);
+        [LoadAccount]
+        public Account Find(Account account) => account;
 
 
         [HttpGet]
@@ -59,6 +60,7 @@ namespace Everest.Identity.Controllers
         /// <remarks>L'email renseigné pour le compte ne doit pas être utilisé par un autre compte.</remarks>
         /// <returns>Le compte nouvellement crée</returns>
         ///
+        [ValidModel]
         [HttpPost]
         public Account Create([FromBody] AddAccountModel model)
         {
@@ -107,6 +109,7 @@ namespace Everest.Identity.Controllers
         /// <exception cref="InvalidValueException">Si l'email renseigné est déjà utilisé par un autre compte.</exception>
 
         [Authorize]
+        [LoadAccount]
         [RequireAccountOwner]
         [HttpPut("{accountId}/email")]
         public StatusCodeResult UpdateEmail(Account account, [FromQuery] string email)
@@ -190,7 +193,7 @@ namespace Everest.Identity.Controllers
             account.Name = info.Name;
             account.Surname = info.Surname;
             account.BirthDate = info.BirthDate;
-            account.NationalIDNumber = info.NationalId;
+            account.NationalId = info.NationalId;
             account.Gender = info.Gender;
 
             accountRepository.Update(account);

@@ -5,10 +5,12 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 using System;
 using Everest.Identity.Core;
+using Everest.Identity.Filters;
+using Everest.Identity.Core.Binding;
 
 namespace Everest.Identity.Controllers
 {
-    [Route("connections")]
+    [Route("api/connections")]
     public class ConnectionController:Controller
     {
         private IRepository<Connection, long> connectionRepository;
@@ -24,7 +26,8 @@ namespace Everest.Identity.Controllers
         }
 
         [HttpGet("{connectionId}")]
-        public Connection Find(long connectionId) => connectionRepository.Find(connectionId);
+        [LoadConnection]
+        public Connection Find(Connection connection) => connection;
 
         /// <summary>
         /// Pour obtenir toutes les connexions d'un compte.
@@ -32,6 +35,7 @@ namespace Everest.Identity.Controllers
         /// <param name="account">Le compte dont on souhaite obtenir les connexions.</param>
         /// <returns>Une liste contenant les connexions du compte.</returns>
         [HttpGet]
+        [LoadAccount]
         public IList<Connection> List(Account account)
         {
             return connectionRepository.List(c => c.Account.Equals(account));
@@ -54,6 +58,7 @@ namespace Everest.Identity.Controllers
         /// </exception>
         /// <returns>La connexion nouvellement crée.</returns>
         [HttpPost]
+        [ValidModel]
         public Connection Create([FromBody] LoginModel model)
         {
             Account account = accountRepository.First(a => a.Email.Equals(model.Email));
@@ -100,6 +105,7 @@ namespace Everest.Identity.Controllers
         ///     Un <see>StatusCodeResult</see> de code 204 si la connexion est fermée.
         /// </returns>
         [HttpPut("{connectionId}/close")]
+        [LoadConnection]
         public StatusCodeResult Close(Connection connection)
         {
             if (connection.IsClosed)

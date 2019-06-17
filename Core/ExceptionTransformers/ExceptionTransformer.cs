@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 
-namespace Identity.Core.ExceptionTransformers
+namespace Everest.Identity.Core.ExceptionTransformers
 {
     public class ExceptionTransformer:IExceptionTransformer
     {

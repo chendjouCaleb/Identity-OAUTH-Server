@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Identity.Core.Binding
+namespace Everest.Identity.Core.Binding
 {
     public class ValidModelAttribute : ActionFilterAttribute
     {

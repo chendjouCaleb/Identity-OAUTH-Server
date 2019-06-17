@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 
-namespace Identity.Core.ExceptionTransformers
+namespace Everest.Identity.Core.ExceptionTransformers
 {
     public class ExceptionTransformerAttribute : ExceptionFilterAttribute
     {
@@ -12,7 +12,7 @@ namespace Identity.Core.ExceptionTransformers
                 GetService(typeof(ExceptionTransformerFactory)) as ExceptionTransformerFactory;
             Exception ex = context.Exception;
 
-            Console.WriteLine(ex);
+            Console.Error.WriteLine(ex);
 
             IExceptionTransformer transformer = factory.GetExceptionTransformer(ex.GetType());
 

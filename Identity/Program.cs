@@ -13,6 +13,7 @@ namespace Identity
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+            .UseDefaultServiceProvider(options => options.ValidateScopes = false)
                 .UseStartup<Startup>();
     }
 #pragma warning restore CS1591

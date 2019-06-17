@@ -1,10 +1,13 @@
-﻿using Everest.Identity.Core.Models;
+﻿using Everest.Identity.Core.Binding;
+using Everest.Identity.Core.Models;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
 namespace Everest.Identity.Models
 {
+    [ModelBinder(BinderType = typeof(ItemValueModelBinder))]
     public class Account:Entity<string>
     {
         public Account()
@@ -22,7 +25,7 @@ namespace Everest.Identity.Models
 
         public string Gender { get; set; }
 
-        public string NationalIDNumber { get; set; }
+        public string NationalId { get; set; }
 
         public string Email { get; set; }
 

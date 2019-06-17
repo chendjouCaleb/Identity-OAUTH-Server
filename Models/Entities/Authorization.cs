@@ -1,8 +1,11 @@
-﻿using Everest.Identity.Core.Models;
+﻿using Everest.Identity.Core.Binding;
+using Everest.Identity.Core.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Everest.Identity.Models
 {
-    public class Authorization:Entity<string>
+    [ModelBinder(BinderType = typeof(ItemValueModelBinder))]
+    public class Authorization:Entity<long>
     {
         public virtual Client Client { get; set; }
 

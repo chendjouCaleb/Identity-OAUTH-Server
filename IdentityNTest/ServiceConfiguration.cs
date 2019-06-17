@@ -1,13 +1,12 @@
 ﻿using Everest.Identity;
 using Everest.Identity.Controllers;
 using Everest.Identity.Models;
+using Everest.Identity.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Everest.IdentityTest
 {
@@ -32,6 +31,7 @@ namespace Everest.IdentityTest
             ServiceCollection.AddTransient<ConnectionController>();
             ServiceCollection.AddTransient<AuthorizationController>();
             ServiceCollection.AddTransient<IPasswordHasher<Account>, PasswordHasher<Account>>();
+            ServiceCollection.AddTransient<AccessTokenValidator>();
             ServiceCollection.AddSingleton<IConfiguration, TestConfiguration>();
 
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Identity.Core.ExceptionTransformers
+namespace Everest.Identity.Core.ExceptionTransformers
 {
     public class ExceptionTransformerFactory
     {

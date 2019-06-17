@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Identity.Core.ExceptionTransformers
+namespace Everest.Identity.Core.ExceptionTransformers
 {
     public class ResponseStatusCodeAttribute: Attribute
     {

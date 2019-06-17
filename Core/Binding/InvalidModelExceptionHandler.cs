@@ -1,7 +1,7 @@
-﻿using Identity.Core.Binding;
+﻿using Everest.Identity.Core.ExceptionTransformers;
 using System;
 
-namespace Identity.Core.ExceptionTransformers
+namespace Everest.Identity.Core.Binding
 {
     public class InvalidModelExceptionHandler : ExceptionTransformer
     {

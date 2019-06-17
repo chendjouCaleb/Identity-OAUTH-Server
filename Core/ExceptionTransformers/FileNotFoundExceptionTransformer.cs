@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace Identity.Core.ExceptionTransformers
+namespace Everest.Identity.Core.ExceptionTransformers
 {
     public class FileNotFoundExceptionTransformer
     {
